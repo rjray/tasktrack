@@ -4,9 +4,9 @@ import { Redirect } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import { Meteor } from "meteor/meteor";
 
-const Login = () => {
-  return Meteor.user() ? (
-    <Redirect to={{ pathname: "/" }} />
+const Login = ({ currentUser }) => {
+  return currentUser ? (
+    <Redirect to={{ pathname: "/mine" }} />
   ) : (
     <>
       <Helmet>
