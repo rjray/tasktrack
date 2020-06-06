@@ -11,7 +11,11 @@ import { withTracker } from "meteor/react-meteor-data";
 
 import Tasks from "../api/tasks";
 import AccountsUIWrapper from "./AccountsUIWrapper";
+import Home from "./Home";
 import Login from "./login/Login";
+import MyTasks from "./MyTasks/MyTasks";
+import AllTasks from "./AllTasks/AllTasks";
+import NewTask from "./NewTask/NewTask";
 
 const App = (props) => (
   <Router>
@@ -29,7 +33,7 @@ const App = (props) => (
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             <NavDropdown title="View" id="basic-nav-dropdown">
-              <LinkContainer to="/">
+              <LinkContainer to="/mine">
                 <NavDropdown.Item>My Tasks</NavDropdown.Item>
               </LinkContainer>
               <LinkContainer to="/all">
@@ -49,16 +53,19 @@ const App = (props) => (
     <Container fluid>
       <Switch>
         <Route exact path="/">
-          <Container></Container>
+          <Home {...props} />
+        </Route>
+        <Route path="/mine">
+          <MyTasks {...props} />
         </Route>
         <Route path="/all">
-          <Container></Container>
+          <AllTasks {...props} />
         </Route>
         <Route path="/new">
-          <Container></Container>
+          <NewTask {...props} />
         </Route>
         <Route path="/login">
-          <Login />
+          <Login {...props} />
         </Route>
       </Switch>
     </Container>
@@ -69,7 +76,7 @@ export default withTracker(() => {
   Meteor.subscribe("tasks");
 
   return {
-    tasks: Tasks.find({}).fetch(),
+    tasks: Tasks,
     currentUser: Meteor.user(),
   };
 })(App);
