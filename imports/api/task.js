@@ -2,7 +2,7 @@
  * The Task class and related stuff.
  */
 
-import { Mongo } from 'meteor/mongo';
+import { Mongo } from "meteor/mongo";
 
 const taskFields = new Set([
   "name",
@@ -31,15 +31,14 @@ class Task {
     // Allow the constructor to act as a sort of clone op:
     delete task._id;
 
-    if (!Task.validate(task)) {
-
-    }
+    Task.validate(task);
 
     for (const key in task) {
       this[key] = task[key];
     }
 
     this.createdAt = new Date();
+    this.updatedAt = this.createdAt;
     this.status = taskStatus.TODO;
     if (!this.hasOwnProperty("priority")) {
       this.priority = 3;
@@ -64,7 +63,7 @@ class Task {
       }
     });
 
-    return true;
+    return;
   }
 }
 

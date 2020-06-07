@@ -9,11 +9,12 @@ const Tasks = new Mongo.Collection("tasks");
 if (Meteor.isServer) {
   // This code only runs on the server
   // Only publish tasks that are public or belong to the current user
-  Meteor.publish('tasks', function tasksPublication() {
+  Meteor.publish("tasks", function tasksPublication() {
     return Tasks.find({
       $or: [
         { private: { $ne: true } },
         { owner: this.userId },
+        { assignedTo: this.userId },
       ],
     });
   });
@@ -21,14 +22,12 @@ if (Meteor.isServer) {
 
 Meteor.methods({
   "tasks.create"(task) {
-    const newTask = new Task(task);
-
     // Must be a logged-in user to insert a task:
     if (!this.userId) {
       throw new Meteor.Error("not-authorized");
     }
 
-    Tasks.insert(newTask);
+    Tasks.insert(new Task(task));
   },
 
   "tasks.retrieve"(taskId) {
@@ -36,7 +35,7 @@ Meteor.methods({
 
     const task = Tasks.findOne(taskId);
     if (task.private && task.owner !== this.userId) {
-      // If the task is private, make sure only the owner can delete it
+      // If the task is private, make sure only the owner can retrieve it
       throw new Meteor.Error("not-authorized");
     }
 
@@ -48,7 +47,7 @@ Meteor.methods({
 
     const task = Tasks.findOne(taskId);
     if (task.private && task.owner !== this.userId) {
-      // If the task is private, make sure only the owner can delete it
+      // If the task is private, make sure only the owner can update it
       throw new Meteor.Error("not-authorized");
     }
 
@@ -78,7 +77,7 @@ Meteor.methods({
     }
 
     Tasks.update(taskId, { $set: { private } });
-  }
+  },
 });
 
 export default Tasks;
