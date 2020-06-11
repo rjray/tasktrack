@@ -9,11 +9,8 @@ import { withTracker } from "meteor/react-meteor-data";
 
 import Tasks from "../api/tasks";
 import AccountsUIWrapper from "./AccountsUIWrapper";
-import Home from "./Home";
+import Routes from "./Routes";
 import Login from "./login/Login";
-import MyTasks from "./MyTasks/MyTasks";
-import AllTasks from "./AllTasks/AllTasks";
-import NewTask from "./NewTask/NewTask";
 
 const App = (props) => (
   <Router>
@@ -33,23 +30,8 @@ const App = (props) => (
       </Row>
     </Container>
     <Container fluid>
-      <Switch>
-        <Route exact path="/">
-          <Home {...props} />
-        </Route>
-        <Route path="/mine">
-          <MyTasks {...props} />
-        </Route>
-        <Route path="/all">
-          <AllTasks {...props} />
-        </Route>
-        <Route path="/new">
-          <NewTask {...props} />
-        </Route>
-        <Route path="/login">
-          <Login {...props} />
-        </Route>
-      </Switch>
+      {!props.currentUser && <Login {...props} />}
+      {props.currentUser && <Routes {...props} />}
     </Container>
   </Router>
 );

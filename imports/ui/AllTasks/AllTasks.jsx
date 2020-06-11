@@ -4,9 +4,7 @@ import { Redirect } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 
 const AllTasks = ({ tasks, currentUser }) => {
-  return !currentUser ? (
-    <Redirect to={{ pathname: "/login" }} />
-  ) : (
+  return (
     <>
       <Helmet>
         <title>All Tasks</title>

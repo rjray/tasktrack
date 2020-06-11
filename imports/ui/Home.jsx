@@ -1,11 +1,17 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import Container from "react-bootstrap/Container";
 
 const Home = ({ currentUser }) => {
-  return !currentUser ? (
-    <Redirect to={{ pathname: "/login" }} />
-  ) : (
-    <Redirect to={{ pathname: "/mine" }} />
+  return (
+    <>
+      <Helmet>
+        <title>Home</title>
+      </Helmet>
+      <Container fluid>
+        <h1 className="mt-3">Home</h1>
+      </Container>
+    </>
   );
 };
 
