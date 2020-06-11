@@ -2,10 +2,8 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Container from "react-bootstrap/Container";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Nav from "react-bootstrap/Nav";
-import { LinkContainer } from "react-router-bootstrap";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import { Meteor } from "meteor/meteor";
 import { withTracker } from "meteor/react-meteor-data";
 
@@ -23,32 +21,16 @@ const App = (props) => (
       <title>Home</title>
     </Helmet>
     <Container fluid>
-      <Navbar bg="light" expand="sm">
-        <LinkContainer to="/">
-          <Navbar.Brand>
+      <Row className="p-3">
+        <Col xs={6}>
+          <h1>
             Task<em>Track</em>
-          </Navbar.Brand>
-        </LinkContainer>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto">
-            <NavDropdown title="View" id="basic-nav-dropdown">
-              <LinkContainer to="/mine">
-                <NavDropdown.Item>My Tasks</NavDropdown.Item>
-              </LinkContainer>
-              <LinkContainer to="/all">
-                <NavDropdown.Item>All Tasks</NavDropdown.Item>
-              </LinkContainer>
-              <LinkContainer to="/new">
-                <NavDropdown.Item>New Task</NavDropdown.Item>
-              </LinkContainer>
-            </NavDropdown>
-          </Nav>
-        </Navbar.Collapse>
-        <Nav>
+          </h1>
+        </Col>
+        <Col xs={6} className="text-right">
           <AccountsUIWrapper />
-        </Nav>
-      </Navbar>
+        </Col>
+      </Row>
     </Container>
     <Container fluid>
       <Switch>
@@ -76,7 +58,7 @@ export default withTracker(() => {
   Meteor.subscribe("tasks");
 
   return {
-    tasks: Tasks,
+    tasks: Tasks.find({}, { sort: { createdAt: -1 } }).fetch(),
     currentUser: Meteor.user(),
   };
 })(App);
