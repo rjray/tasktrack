@@ -1,13 +1,9 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Redirect } from "react-router-dom";
 import Container from "react-bootstrap/Container";
-import { Meteor } from "meteor/meteor";
 
-const Login = ({ currentUser }) => {
-  return currentUser ? (
-    <Redirect to={{ pathname: "/mine" }} />
-  ) : (
+const Login = () => {
+  return (
     <>
       <Helmet>
         <title>Log In</title>

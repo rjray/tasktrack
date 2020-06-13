@@ -1,6 +1,5 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Redirect } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 
 const NewTask = ({ tasks, currentUser }) => {
