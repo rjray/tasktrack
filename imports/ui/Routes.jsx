@@ -3,7 +3,6 @@ import { Route, Switch } from "react-router-dom";
 
 import Home from "./Home";
 import AllTasks from "./AllTasks";
-import NewTask from "./NewTask";
 
 const Routes = (props) => (
   <Switch>
@@ -12,9 +11,6 @@ const Routes = (props) => (
     </Route>
     <Route path="/all">
       <AllTasks {...props} />
-    </Route>
-    <Route path="/new">
-      <NewTask {...props} />
     </Route>
   </Switch>
 );
