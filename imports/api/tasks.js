@@ -6,6 +6,22 @@ import Task from "./task";
 
 const Tasks = new Mongo.Collection("tasks");
 
+export const taskPriorities = [
+  "Highest",
+  "High",
+  "Normal",
+  "Low",
+  "Lowest",
+];
+export const defaultTaskPriority = 2;
+
+export const taskStatusList = [
+  "Not Started",
+  "In Progress",
+  "Completed",
+];
+export const defaultTaskStatus = 0;
+
 if (Meteor.isServer) {
   // This code only runs on the server
   // Only publish tasks that are public or belong to the current user
