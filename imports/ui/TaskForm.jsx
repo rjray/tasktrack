@@ -2,7 +2,6 @@ import React from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
 import {
   Formik,
   Field,
@@ -16,12 +15,7 @@ import * as Yup from "yup";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import {
-  taskPriorities,
-  defaultTaskPriority,
-  taskStatusList,
-  defaultTaskStatus,
-} from "../api/tasks";
+import { taskPriorities, taskStatusList } from "../api/tasks";
 
 const DatePickerField = ({ ...props }) => {
   const { setFieldValue } = useFormikContext();
@@ -72,16 +66,10 @@ const validationSchema = Yup.object().shape({
   ),
 });
 
-const TaskForm = ({ type, task = {}, submitHandler }) => {
-  const isModal = type === "modal";
+const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
   const isUpdate = type === "update";
-  const isFull = !isModal || isUpdate;
 
-  let initialValues = { ...task };
-  if (!isUpdate) {
-    initialValues.priority = defaultTaskPriority;
-    initialValues.status = defaultTaskStatus;
-  }
+  const initialValues = { ...task, owner: currentUser._id };
   if (!initialValues.dueAt) {
     initialValues.dueAt = addDays(new Date(), 1);
   }
@@ -93,7 +81,6 @@ const TaskForm = ({ type, task = {}, submitHandler }) => {
       onSubmit={submitHandler}
     >
       {({
-        values,
         handleChange,
         handleBlur,
         handleSubmit,
@@ -115,6 +102,7 @@ const TaskForm = ({ type, task = {}, submitHandler }) => {
                 onChange={handleChange}
                 placeholder="Name"
                 data-lpignore="true"
+                autoFocus
               />
             </Col>
           </Form.Group>

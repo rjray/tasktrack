@@ -6,14 +6,23 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { Meteor } from "meteor/meteor";
 
 import NewTaskModal from "./NewTaskModal";
+import TaskTable from "./TaskTable";
+
+const submitHandler = (values, formikBag) => {
+  Meteor.call("tasks.create", values);
+  formikBag.setSubmitting(false);
+};
 
 const NoTasks = () => <p>You have no tasks.</p>;
 
-const Home = ({ tasks }) => {
+const Home = ({ tasks, currentUser }) => {
   const [showCompleted, setShowCompleted] = useState(false);
   const [showForm, setShowForm] = useState(false);
+
+  const userTasks = tasks.filter((i) => i.owner === currentUser._id);
 
   return (
     <>
@@ -43,9 +52,17 @@ const Home = ({ tasks }) => {
             />
           </Col>
         </Row>
-        <Row>{tasks.length === 0 && <NoTasks />}</Row>
+        <Row>
+          {userTasks.length === 0 && <NoTasks />}
+          {userTasks.length > 0 && <TaskTable tasks={userTasks} />}
+        </Row>
       </Container>
-      <NewTaskModal show={showForm} setShow={setShowForm} />
+      <NewTaskModal
+        currentUser={currentUser}
+        show={showForm}
+        setShow={setShowForm}
+        submitHandler={submitHandler}
+      />
     </>
   );
 };

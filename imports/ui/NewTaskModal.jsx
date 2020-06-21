@@ -2,14 +2,22 @@ import React from "react";
 import Modal from "react-bootstrap/Modal";
 
 import TaskForm from "./TaskForm";
+import { defaultTaskTemplate } from "../api/tasks";
 
-const NewTaskModal = ({ show, setShow }) => (
+const NewTaskModal = ({ show, setShow, submitHandler, currentUser }) => (
   <Modal show={show} onHide={() => setShow(false)}>
     <Modal.Header closeButton>
       <Modal.Title>Create New Task</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-      <TaskForm type="modal" />
+      <TaskForm
+        currentUser={currentUser}
+        task={defaultTaskTemplate}
+        submitHandler={(values, formikBag) => {
+          submitHandler(values, formikBag);
+          setShow(false);
+        }}
+      />
     </Modal.Body>
   </Modal>
 );
