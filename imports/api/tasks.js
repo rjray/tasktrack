@@ -2,25 +2,34 @@ import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import { check, Match } from "meteor/check";
 
-import Task from "./task";
-
 const Tasks = new Mongo.Collection("tasks");
 
-export const taskPriorities = [
-  "Highest",
-  "High",
-  "Normal",
-  "Low",
-  "Lowest",
-];
+export const taskPriorities = ["Highest", "High", "Normal", "Low", "Lowest"];
 export const defaultTaskPriority = 2;
 
 export const taskStatusList = [
   "Not Started",
   "In Progress",
+  "Blocked",
   "Completed",
 ];
 export const defaultTaskStatus = 0;
+
+export const defaultTaskTemplate = {
+  name: "",
+  description: "",
+  priority: defaultTaskPriority,
+  status: defaultTaskStatus,
+  owner: null,
+  private: false,
+  assignedTo: null,
+  notes: "",
+  createdAt: null,
+  dueAt: null,
+  updatedAt: null,
+  completedAt: null,
+  parent: null,
+};
 
 if (Meteor.isServer) {
   // This code only runs on the server
@@ -43,7 +52,15 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    Tasks.insert(new Task(task));
+    if (!(task.owner && task.name && task.description)) {
+      throw new Error("Missing basic information");
+    }
+
+    task.createdAt = new Date();
+    task.updatedAt = task.createdAt;
+    task.status = defaultTaskStatus;
+
+    Tasks.insert(task);
   },
 
   "tasks.retrieve"(taskId) {
@@ -55,7 +72,7 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    Tasks.remove(taskId);
+    Tasks.findOne(taskId);
   },
 
   "tasks.update"(taskId, fields) {
@@ -66,6 +83,8 @@ Meteor.methods({
       // If the task is private, make sure only the owner can update it
       throw new Meteor.Error("not-authorized");
     }
+
+    fields.updatedAt = new Date();
 
     Tasks.update(taskId, { $set: fields });
   },
