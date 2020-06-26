@@ -30,17 +30,26 @@ const columns = [
   },
 ];
 
-const TaskTable = ({ tasks }) => (
-  <DataTable
-    striped
-    responsive
-    highlightOnHover
-    pointerOnHover
-    pagination
-    paginationPerPage={25}
-    data={tasks}
-    columns={columns}
-  />
-);
+const TaskTable = ({ tasks }) => {
+  const pagination =
+    tasks.length < 26
+      ? {}
+      : {
+          pagination: true,
+          paginationPerPage: 25,
+        };
+
+  return (
+    <DataTable
+      striped
+      responsive
+      highlightOnHover
+      pointerOnHover
+      data={tasks}
+      columns={columns}
+      {...pagination}
+    />
+  );
+};
 
 export default TaskTable;
