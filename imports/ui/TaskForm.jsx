@@ -15,7 +15,7 @@ import * as Yup from "yup";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import { taskPriorities, taskStatusList } from "../api/tasks";
+import { taskPriorityList, taskStatusList } from "../api/tasks";
 
 const DatePickerField = ({ ...props }) => {
   const { setFieldValue } = useFormikContext();
@@ -120,7 +120,7 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
                 onChange={handleChange}
                 style={{ width: "100%", marginTop: "0.35rem" }}
               >
-                {taskPriorities.map((type, index) => (
+                {taskPriorityList.map((type, index) => (
                   <option key={index} value={index}>
                     {type}
                   </option>
