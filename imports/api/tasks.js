@@ -4,8 +4,15 @@ import { check, Match } from "meteor/check";
 
 const Tasks = new Mongo.Collection("tasks");
 
-export const taskPriorities = ["Highest", "High", "Normal", "Low", "Lowest"];
-export const defaultTaskPriority = 2;
+export const taskPriorityList = ["Highest", "High", "Normal", "Low", "Lowest"];
+export const taskPriorityMap = {
+  HIGHEST: 0,
+  HIGH: 1,
+  NORMAL: 2,
+  LOW: 3,
+  LOWEST: 4,
+};
+export const defaultTaskPriority = taskPriorityMap.NORMAL;
 
 export const taskStatusList = [
   "Not Started",
@@ -13,7 +20,13 @@ export const taskStatusList = [
   "Blocked",
   "Completed",
 ];
-export const defaultTaskStatus = 0;
+export const taskStatusMap = {
+  NOTSTARTED: 0,
+  INPROGRESS: 1,
+  BLOCKED: 2,
+  COMPLETED: 3,
+};
+export const defaultTaskStatus = taskStatusMap.NOTSTARTED;
 
 export const defaultTaskTemplate = {
   name: "",
