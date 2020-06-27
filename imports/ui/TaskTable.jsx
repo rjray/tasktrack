@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 import DataTable from "react-data-table-component";
 import format from "date-fns/format";
 
-import { taskPriorities, taskStatusList } from "../api/tasks";
+import { taskPriorityList, taskStatusList } from "../api/tasks";
 
 const TaskExpand = ({ data: task }) => {
   return (
@@ -23,6 +23,8 @@ const TaskExpand = ({ data: task }) => {
   );
 };
 
+const formatDate = (date) => format(date, "P, p");
+
 const columns = [
   {
     name: <b>Name</b>,
@@ -33,7 +35,8 @@ const columns = [
     name: <b>Priority</b>,
     selector: "priority",
     sortable: true,
-    cell: (row) => taskPriorities[row.priority],
+    hide: "md",
+    cell: (row) => taskPriorityList[row.priority],
   },
   {
     name: <b>Status</b>,
@@ -46,13 +49,13 @@ const columns = [
     selector: "createdAt",
     sortable: true,
     hide: "md",
-    cell: (row) => format(row.createdAt, "E, MMM do yyyy, h:mma"),
+    cell: (row) => formatDate(row.createdAt),
   },
   {
     name: <b>Due</b>,
     selector: "dueAt",
     sortable: true,
-    cell: (row) => format(row.dueAt, "E, MMM do yyyy, h:mma"),
+    cell: (row) => formatDate(row.dueAt),
   },
 ];
 
