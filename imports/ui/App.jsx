@@ -39,7 +39,7 @@ export default withTracker(() => {
   Meteor.subscribe("tasks");
 
   return {
-    tasks: Tasks.find({}, { sort: { createdAt: -1 } }).fetch(),
+    tasks: Tasks.find({}).fetch(),
     currentUser: Meteor.user(),
   };
 })(App);
