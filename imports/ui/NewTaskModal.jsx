@@ -13,10 +13,7 @@ const NewTaskModal = ({ show, setShow, submitHandler, currentUser }) => (
       <TaskForm
         currentUser={currentUser}
         task={defaultTaskTemplate}
-        submitHandler={(values, formikBag) => {
-          submitHandler(values, formikBag);
-          setShow(false);
-        }}
+        submitHandler={submitHandler}
       />
     </Modal.Body>
   </Modal>
