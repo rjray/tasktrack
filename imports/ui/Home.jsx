@@ -10,19 +10,22 @@ import { Meteor } from "meteor/meteor";
 
 import NewTaskModal from "./NewTaskModal";
 import TaskTable from "./TaskTable";
-
-const submitHandler = (values, formikBag) => {
-  Meteor.call("tasks.create", values);
-  formikBag.setSubmitting(false);
-};
-
-const NoTasks = () => <p>You have no tasks.</p>;
+import { taskStatusMap } from "../api/tasks";
 
 const Home = ({ tasks, currentUser }) => {
   const [showCompleted, setShowCompleted] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
-  const userTasks = tasks.filter((i) => i.owner === currentUser._id);
+  const allTasks = showCompleted
+    ? tasks
+    : tasks.filter((i) => i.status !== taskStatusMap.COMPLETED);
+  const userTasks = allTasks.filter((i) => i.owner === currentUser._id);
+
+  const submitHandler = (values, formikBag) => {
+    Meteor.call("tasks.create", values);
+    formikBag.setSubmitting(false);
+    setShowForm(false);
+  };
 
   return (
     <>
@@ -53,8 +56,7 @@ const Home = ({ tasks, currentUser }) => {
           </Col>
         </Row>
         <Row>
-          {userTasks.length === 0 && <NoTasks />}
-          {userTasks.length > 0 && <TaskTable tasks={userTasks} />}
+          <TaskTable tasks={userTasks} />
         </Row>
       </Container>
       <NewTaskModal
