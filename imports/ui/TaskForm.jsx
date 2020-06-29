@@ -9,6 +9,7 @@ import {
   useField,
   useFormikContext,
 } from "formik";
+import format from "date-fns/format";
 import addDays from "date-fns/addDays";
 import DatePicker from "react-datepicker";
 import * as Yup from "yup";
@@ -81,6 +82,7 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
       onSubmit={submitHandler}
     >
       {({
+        values,
         handleChange,
         handleBlur,
         handleSubmit,
@@ -160,19 +162,16 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
                   sm={3}
                   className="text-md-right text-sm-left"
                 >
-                  Due:
+                  Created:
                 </Form.Label>
                 <Col sm={9}>
-                  <DatePickerField
-                    name="createdAt"
-                    disabled={true}
-                    onBlur={handleBlur}
-                    minDate={new Date()}
-                    showDisabledMonthNavigation
-                    showTimeInput
-                    timeInputLabel="Time:"
-                    dateFormat="MMMM d, yyyy h:mm aa"
-                    placeholderText="Date Due"
+                  <Form.Control
+                    plaintext
+                    readOnly
+                    defaultValue={format(
+                      values.createdAt,
+                      "MMMM d, yyyy h:mm aa"
+                    )}
                   />
                 </Col>
               </Form.Group>
@@ -182,19 +181,16 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
                   sm={3}
                   className="text-md-right text-sm-left"
                 >
-                  Due:
+                  Updated:
                 </Form.Label>
                 <Col sm={9}>
-                  <DatePickerField
-                    name="updateAt"
-                    disabled={true}
-                    onBlur={handleBlur}
-                    minDate={new Date()}
-                    showDisabledMonthNavigation
-                    showTimeInput
-                    timeInputLabel="Time:"
-                    dateFormat="MMMM d, yyyy h:mm aa"
-                    placeholderText="Date Due"
+                  <Form.Control
+                    plaintext
+                    readOnly
+                    defaultValue={format(
+                      values.updatedAt,
+                      "MMMM d, yyyy h:mm aa"
+                    )}
                   />
                 </Col>
               </Form.Group>
@@ -262,7 +258,7 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
                 onClick={handleSubmit}
                 disabled={isSubmitting}
               >
-                Submit
+                {isUpdate ? "Update" : "Submit"}
               </Button>{" "}
               <Button type="reset" onClick={handleReset}>
                 Reset
