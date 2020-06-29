@@ -1,22 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import DataTable from "react-data-table-component";
 import format from "date-fns/format";
+import { Meteor } from "meteor/meteor";
 
 import { taskPriorityList, taskStatusList } from "../api/tasks";
+import UpdateTaskModal from "./UpdateTaskModal";
+import DeleteTaskModal from "./DeleteTaskModal";
 
-const TaskExpand = ({ data: task }) => {
+const TaskExpand = ({
+  data: task,
+  setShowUpdate,
+  setShowDelete,
+  setSelectedTask,
+}) => {
   return (
     <Container fluid className="mt-2 mb-3">
       <Row>
         <Col xs={6}>
-          <Button>Edit</Button>
+          <Button
+            onClick={() => {
+              setSelectedTask(task);
+              setShowUpdate(true);
+            }}
+          >
+            Edit
+          </Button>
         </Col>
         <Col xs={6} className="text-right">
-          <Button>Delete</Button>
+          <Button
+            onClick={() => {
+              setSelectedTask(task);
+              setShowDelete(true);
+            }}
+          >
+            Delete
+          </Button>
         </Col>
       </Row>
     </Container>
@@ -59,7 +81,11 @@ const columns = [
   },
 ];
 
-const TaskTable = ({ tasks }) => {
+const TaskTable = ({ tasks, currentUser }) => {
+  const [showUpdate, setShowUpdate] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+
   const pagination =
     tasks.length < 11
       ? {}
@@ -68,24 +94,48 @@ const TaskTable = ({ tasks }) => {
           paginationPerPage: 10,
         };
 
+  const teProps = { setShowUpdate, setShowDelete, setSelectedTask };
+
   return (
-    <DataTable
-      responsive
-      dense
-      noDataComponent={<p>No tasks to display.</p>}
-      keyField="_id"
-      defaultSortField="dueAt"
-      defaultSortAsc={false}
-      highlightOnHover
-      pointerOnHover
-      data={tasks}
-      columns={columns}
-      expandableRows
-      expandOnRowClicked
-      expandableRowsHideExpander
-      expandableRowsComponent={<TaskExpand />}
-      {...pagination}
-    />
+    <>
+      <DataTable
+        responsive
+        dense
+        noDataComponent={<p>No tasks to display.</p>}
+        keyField="_id"
+        defaultSortField="dueAt"
+        defaultSortAsc={false}
+        highlightOnHover
+        pointerOnHover
+        data={tasks}
+        columns={columns}
+        expandableRows
+        expandOnRowClicked
+        expandableRowsHideExpander
+        expandableRowsComponent={<TaskExpand {...teProps} />}
+        {...pagination}
+      />
+      <UpdateTaskModal
+        show={showUpdate}
+        setShow={setShowUpdate}
+        currentUser={currentUser}
+        task={selectedTask}
+        submitHandler={(values, formikBag) => {
+          Meteor.call("tasks.update", selectedTask._id, values);
+          formikBag.setSubmitting(false);
+          setShowUpdate(false);
+        }}
+      />
+      <DeleteTaskModal
+        show={showDelete}
+        setShow={setShowDelete}
+        task={selectedTask || {}}
+        submitHandler={() => {
+          Meteor.call("tasks.delete", selectedTask._id);
+          setShowDelete(false);
+        }}
+      />
+    </>
   );
 };
 
