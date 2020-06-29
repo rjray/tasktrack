@@ -3,6 +3,12 @@
 My Coursera capstone project for the Responsive Website Development and Design
 specialization.
 
+## Description
+
+This is an enhanced task-tracking application. It will eventually feature
+assigning tasks to other users, sub-tasks, tracking lifecycle, etc., as well
+as the basic features.
+
 ## Dissatisfaction
 
 (The following is an update of what I wrote originally on April 10, 2020.
