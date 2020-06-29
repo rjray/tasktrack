@@ -55,7 +55,7 @@ const AllTasks = ({ tasks, currentUser }) => {
           </Col>
         </Row>
         <Row>
-          <TaskTable tasks={allTasks} />
+          <TaskTable tasks={allTasks} currentUser={currentUser} />
         </Row>
       </Container>
       <NewTaskModal

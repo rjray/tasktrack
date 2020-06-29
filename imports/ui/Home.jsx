@@ -56,7 +56,7 @@ const Home = ({ tasks, currentUser }) => {
           </Col>
         </Row>
         <Row>
-          <TaskTable tasks={userTasks} />
+          <TaskTable tasks={userTasks} currentUser={currentUser} />
         </Row>
       </Container>
       <NewTaskModal
