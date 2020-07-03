@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { BrowserRouter as Router } from "react-router-dom";
 import Container from "react-bootstrap/Container";
@@ -12,28 +12,33 @@ import AccountsUIWrapper from "./AccountsUIWrapper";
 import Routes from "./Routes";
 import Login from "./Login";
 
-const App = (props) => (
-  <Router>
-    <Helmet titleTemplate="TaskTrack - %s">
-      <title>Home</title>
-    </Helmet>
-    <Container fluid>
-      <Row className="p-3">
-        <Col xs={6}>
-          <h1>
-            <a href="/">
-              Task<em>Track</em>
-            </a>
-          </h1>
-        </Col>
-        <Col xs={6} className="text-right">
-          <AccountsUIWrapper />
-        </Col>
-      </Row>
-    </Container>
-    {props.currentUser ? <Routes {...props} /> : <Login />}
-  </Router>
-);
+const App = (props) => {
+  const [showCompleted, setShowCompleted] = useState(false);
+  const toggle = { showCompleted, setShowCompleted };
+
+  return (
+    <Router>
+      <Helmet titleTemplate="TaskTrack - %s">
+        <title>Home</title>
+      </Helmet>
+      <Container fluid>
+        <Row className="p-3">
+          <Col xs={6}>
+            <h1>
+              <a href="/">
+                Task<em>Track</em>
+              </a>
+            </h1>
+          </Col>
+          <Col xs={6} className="text-right">
+            <AccountsUIWrapper />
+          </Col>
+        </Row>
+      </Container>
+      {props.currentUser ? <Routes {...props} {...toggle} /> : <Login />}
+    </Router>
+  );
+};
 
 export default withTracker(() => {
   Meteor.subscribe("tasks");

@@ -12,8 +12,7 @@ import NewTaskModal from "./NewTaskModal";
 import TaskTable from "./TaskTable";
 import { taskStatusMap } from "../api/tasks";
 
-const AllTasks = ({ tasks, currentUser }) => {
-  const [showCompleted, setShowCompleted] = useState(false);
+const AllTasks = ({ tasks, currentUser, showCompleted, setShowCompleted }) => {
   const [showForm, setShowForm] = useState(false);
 
   const allTasks = showCompleted
