@@ -6,11 +6,11 @@ const Tasks = new Mongo.Collection("tasks");
 
 export const taskPriorityList = ["Highest", "High", "Normal", "Low", "Lowest"];
 export const taskPriorityMap = {
-  HIGHEST: 0,
-  HIGH: 1,
-  NORMAL: 2,
-  LOW: 3,
-  LOWEST: 4,
+  HIGHEST: "0",
+  HIGH: "1",
+  NORMAL: "2",
+  LOW: "3",
+  LOWEST: "4",
 };
 export const defaultTaskPriority = taskPriorityMap.NORMAL;
 
@@ -21,10 +21,10 @@ export const taskStatusList = [
   "Completed",
 ];
 export const taskStatusMap = {
-  NOTSTARTED: 0,
-  INPROGRESS: 1,
-  BLOCKED: 2,
-  COMPLETED: 3,
+  NOTSTARTED: "0",
+  INPROGRESS: "1",
+  BLOCKED: "2",
+  COMPLETED: "3",
 };
 export const defaultTaskStatus = taskStatusMap.NOTSTARTED;
 
@@ -40,8 +40,12 @@ export const defaultTaskTemplate = {
   createdAt: null,
   dueAt: null,
   updatedAt: null,
-  completedAt: null,
   parent: null,
+};
+
+// Predicate to determine if userId should be allowed to see task.
+const accessible = (task, userId) => {
+  return task.owner === userId || task.assignedTo === userId;
 };
 
 if (Meteor.isServer) {
@@ -80,7 +84,7 @@ Meteor.methods({
     check(taskId, Match.OneOf(String, Mongo.ObjectID));
 
     const task = Tasks.findOne(taskId);
-    if (task.private && task.owner !== this.userId) {
+    if (task.private && !accessible(task, this.userId)) {
       // If the task is private, make sure only the owner can retrieve it
       throw new Meteor.Error("not-authorized");
     }
@@ -92,7 +96,7 @@ Meteor.methods({
     check(taskId, Match.OneOf(String, Mongo.ObjectID));
 
     const task = Tasks.findOne(taskId);
-    if (task.private && task.owner !== this.userId) {
+    if (task.private && !accessible(task, this.userId)) {
       // If the task is private, make sure only the owner can update it
       throw new Meteor.Error("not-authorized");
     }
@@ -112,19 +116,6 @@ Meteor.methods({
     }
 
     Tasks.remove(taskId);
-  },
-
-  "tasks.setPrivate"(taskId, private) {
-    check(taskId, Match.OneOf(String, Mongo.ObjectID));
-    check(private, Boolean);
-
-    const task = Tasks.findOne(taskId);
-    // Make sure only the task owner can make a task private
-    if (task.owner !== this.userId) {
-      throw new Meteor.Error("not-authorized");
-    }
-
-    Tasks.update(taskId, { $set: { private } });
   },
 });
 
