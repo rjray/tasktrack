@@ -17,6 +17,8 @@ const TaskExpand = ({
   setShowDelete,
   setSelectedTask,
 }) => {
+  const hasNotes = task.notes !== null && task.notes !== "";
+
   return (
     <Container fluid className="mt-2 mb-3">
       <Row>
@@ -40,6 +42,30 @@ const TaskExpand = ({
             Delete
           </Button>
         </Col>
+      </Row>
+      <Row>
+        <Col xs={12} md={hasNotes ? 6 : 12}>
+          <Row>
+            <Col>
+              <strong>Description:</strong>
+            </Col>
+          </Row>
+          <Row>
+            <Col>{task.description}</Col>
+          </Row>
+        </Col>
+        {hasNotes && (
+          <Col xs={12} md={hasNotes ? 6 : 12}>
+            <Row>
+              <Col>
+                <strong>Notes:</strong>
+              </Col>
+            </Row>
+            <Row>
+              <Col>{task.notes}</Col>
+            </Row>
+          </Col>
+        )}
       </Row>
     </Container>
   );
