@@ -7,33 +7,57 @@ import DataTable from "react-data-table-component";
 import format from "date-fns/format";
 import { Meteor } from "meteor/meteor";
 
-import { taskPriorityList, taskStatusList } from "../api/tasks";
+import { taskPriorityList, taskStatusList, taskAccessible } from "../api/tasks";
 import UpdateTaskModal from "./UpdateTaskModal";
 import DeleteTaskModal from "./DeleteTaskModal";
 
 const TaskExpand = ({
   data: task,
+  currentUser,
   setShowUpdate,
   setShowDelete,
   setSelectedTask,
 }) => {
   const hasNotes = task.notes !== null && task.notes !== "";
+  const accessible = taskAccessible(task, currentUser._id);
+  const owner = task.owner === currentUser._id;
 
   return (
     <Container fluid className="mt-2 mb-3">
-      <Row>
+      <Row className="mb-3">
         <Col xs={6}>
           <Button
+            disabled={!accessible}
             onClick={() => {
               setSelectedTask(task);
               setShowUpdate(true);
             }}
           >
-            Edit
+            Quick Edit
           </Button>
-        </Col>
-        <Col xs={6} className="text-right">
+          &nbsp;
           <Button
+            disabled={!accessible}
+            onClick={() => {
+              setSelectedTask(task);
+              setShowUpdate(true);
+            }}
+          >
+            Full Edit
+          </Button>
+          &nbsp;
+          <Button
+            disabled={!accessible}
+            onClick={() => {
+              setSelectedTask(task);
+              setShowUpdate(true);
+            }}
+          >
+            Sub-Task
+          </Button>
+          &nbsp;
+          <Button
+            disabled={!owner}
             onClick={() => {
               setSelectedTask(task);
               setShowDelete(true);
@@ -120,7 +144,12 @@ const TaskTable = ({ tasks, currentUser }) => {
           paginationPerPage: 10,
         };
 
-  const teProps = { setShowUpdate, setShowDelete, setSelectedTask };
+  const teProps = {
+    setShowUpdate,
+    setShowDelete,
+    setSelectedTask,
+    currentUser,
+  };
 
   return (
     <>

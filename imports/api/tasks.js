@@ -40,11 +40,11 @@ export const defaultTaskTemplate = {
   createdAt: null,
   dueAt: null,
   updatedAt: null,
-  parent: null,
+  parentId: null,
 };
 
 // Predicate to determine if userId should be allowed to see task.
-const accessible = (task, userId) => {
+export const taskAccessible = (task, userId) => {
   return task.owner === userId || task.assignedTo === userId;
 };
 
@@ -84,7 +84,7 @@ Meteor.methods({
     check(taskId, Match.OneOf(String, Mongo.ObjectID));
 
     const task = Tasks.findOne(taskId);
-    if (task.private && !accessible(task, this.userId)) {
+    if (task.private && !taskAccessible(task, this.userId)) {
       // If the task is private, make sure only the owner can retrieve it
       throw new Meteor.Error("not-authorized");
     }
@@ -96,7 +96,7 @@ Meteor.methods({
     check(taskId, Match.OneOf(String, Mongo.ObjectID));
 
     const task = Tasks.findOne(taskId);
-    if (task.private && !accessible(task, this.userId)) {
+    if (task.private && !taskAccessible(task, this.userId)) {
       // If the task is private, make sure only the owner can update it
       throw new Meteor.Error("not-authorized");
     }
