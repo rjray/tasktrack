@@ -48,6 +48,33 @@ export const taskAccessible = (task, userId) => {
   return task.owner === userId || task.assignedTo === userId;
 };
 
+// Take a list of tasks and return a list of augmented task objects that
+// reflect sub-task relationships. The returned list will only have parent
+// tasks at the top-level.
+export const createTaskTree = (tasks) => {
+  const taskMap = {};
+  const newList = [];
+
+  for (const task of tasks) {
+    if (task.parentId) continue;
+
+    task.subtaskCount = 0;
+    task.subtaskList = [];
+    taskMap[task._id] = task;
+    newList.push(task);
+  }
+
+  for (const task of tasks) {
+    const parentId = task.parentId;
+    if (!parentId) continue;
+
+    taskMap[parentId].subtaskList.push(task);
+    taskMap[parentId].subtaskCount++;
+  }
+
+  return newList;
+};
+
 if (Meteor.isServer) {
   // This code only runs on the server
   // Only publish tasks that are public or belong to the current user
@@ -115,7 +142,7 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    Tasks.remove(taskId);
+    Tasks.remove({ $or: [{ _id: taskId }, { parentId: taskId }] });
   },
 });
 

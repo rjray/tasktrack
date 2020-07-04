@@ -67,12 +67,25 @@ const validationSchema = Yup.object().shape({
   ),
 });
 
-const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
+const TaskForm = ({
+  type = "new",
+  task,
+  submitHandler,
+  currentUser,
+  parent,
+}) => {
   const isUpdate = type === "update";
 
   const initialValues = { ...task, owner: currentUser._id };
   if (!initialValues.dueAt) {
     initialValues.dueAt = addDays(new Date(), 1);
+  }
+  if (parent) {
+    initialValues.parentId = parent._id;
+    if (!isUpdate) {
+      initialValues.priority = parent.priority;
+      initialValues.dueAt = parent.dueAt;
+    }
   }
 
   return (
