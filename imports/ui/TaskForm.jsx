@@ -92,7 +92,7 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
         <Form className="mt-3">
           <Form.Group as={Form.Row} controlId="name" className="mb-2">
             <Form.Label column sm={3} className="text-md-right text-sm-left">
-              Name:
+              <strong>Name:</strong>
               <ErrorMessage name="name" component="p" />
             </Form.Label>
             <Col sm={9}>
@@ -110,7 +110,7 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
           </Form.Group>
           <Form.Group as={Form.Row} controlId="priority">
             <Form.Label column sm={3} className="text-md-right text-sm-left">
-              Priority:
+              <strong>Priority:</strong>
             </Form.Label>
             <Col sm={3}>
               <Field
@@ -133,7 +133,7 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
           {isUpdate && (
             <Form.Group as={Form.Row} controlId="status">
               <Form.Label column sm={3} className="text-md-right text-sm-left">
-                Status:
+                <strong>Status:</strong>
               </Form.Label>
               <Col sm={3}>
                 <Field
@@ -162,7 +162,7 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
                   sm={3}
                   className="text-md-right text-sm-left"
                 >
-                  Created:
+                  <strong>Created:</strong>
                 </Form.Label>
                 <Col sm={9}>
                   <Form.Control
@@ -181,7 +181,7 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
                   sm={3}
                   className="text-md-right text-sm-left"
                 >
-                  Updated:
+                  <strong>Updated:</strong>
                 </Form.Label>
                 <Col sm={9}>
                   <Form.Control
@@ -198,7 +198,7 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
           )}
           <Form.Group as={Form.Row} controlId="dueAt">
             <Form.Label column sm={3} className="text-md-right text-sm-left">
-              Due:
+              <strong>Due:</strong>
             </Form.Label>
             <Col sm={9}>
               <DatePickerField
@@ -215,7 +215,7 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
           </Form.Group>
           <Form.Group as={Form.Row} controlId="description" className="mb-2">
             <Form.Label column sm={3} className="text-md-right text-sm-left">
-              Description:
+              <strong>Description:</strong>
               <ErrorMessage name="description" component="p" />
             </Form.Label>
             <Col sm={9}>
@@ -234,7 +234,7 @@ const TaskForm = ({ type = "new", task, submitHandler, currentUser }) => {
           {isUpdate && (
             <Form.Group as={Form.Row} controlId="notes" className="mb-2">
               <Form.Label column sm={3} className="text-md-right text-sm-left">
-                Notes:
+                <strong>Notes:</strong>
                 <ErrorMessage name="notes" component="p" />
               </Form.Label>
               <Col sm={9}>
