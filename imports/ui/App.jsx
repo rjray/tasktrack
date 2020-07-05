@@ -12,9 +12,24 @@ import AccountsUIWrapper from "./AccountsUIWrapper";
 import Routes from "./Routes";
 import Login from "./Login";
 
-const App = (props) => {
+const createUserTable = (users) => {
+  const table = {};
+
+  for (const user of users) {
+    table[user._id] = user.username;
+  }
+
+  return table;
+};
+
+const App = ({ tasks, allUsers, currentUser }) => {
   const [showCompleted, setShowCompleted] = useState(false);
   const toggle = { showCompleted, setShowCompleted };
+  const props = {
+    tasks,
+    currentUser,
+    allUsers: createUserTable(allUsers),
+  };
 
   return (
     <Router>
@@ -25,9 +40,7 @@ const App = (props) => {
         <Row className="p-3">
           <Col xs={6}>
             <h1>
-              <a href="/">
-                Task<em>Track</em>
-              </a>
+              Task<em>Track</em>
             </h1>
           </Col>
           <Col xs={6} className="text-right">
@@ -42,9 +55,11 @@ const App = (props) => {
 
 export default withTracker(() => {
   Meteor.subscribe("tasks");
+  Meteor.subscribe("userList");
 
   return {
     tasks: Tasks.find({}).fetch(),
+    allUsers: Meteor.users.find({}).fetch(),
     currentUser: Meteor.user(),
   };
 })(App);
