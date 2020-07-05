@@ -33,14 +33,13 @@ export const defaultTaskTemplate = {
   description: "",
   priority: defaultTaskPriority,
   status: defaultTaskStatus,
-  owner: null,
-  private: false,
-  assignedTo: null,
+  owner: "",
+  assignedTo: "",
   notes: "",
-  createdAt: null,
-  dueAt: null,
-  updatedAt: null,
-  parentId: null,
+  createdAt: "",
+  dueAt: "",
+  updatedAt: "",
+  parentId: "",
 };
 
 // Predicate to determine if userId should be allowed to see task.
@@ -78,7 +77,7 @@ export const createTaskTree = (tasks) => {
 if (Meteor.isServer) {
   // This code only runs on the server
   // Only publish tasks that are public or belong to the current user
-  Meteor.publish("tasks", function tasksPublication() {
+  Meteor.publish("tasks", function () {
     return Tasks.find({
       $or: [
         { private: { $ne: true } },
@@ -87,6 +86,7 @@ if (Meteor.isServer) {
       ],
     });
   });
+  Meteor.publish("userList", () => Meteor.users.find({}));
 }
 
 Meteor.methods({

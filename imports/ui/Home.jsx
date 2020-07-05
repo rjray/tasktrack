@@ -10,16 +10,24 @@ import { Meteor } from "meteor/meteor";
 
 import NewTaskModal from "./NewTaskModal";
 import TaskTable from "./TaskTable";
-import { taskStatusMap, createTaskTree } from "../api/tasks";
+import { taskStatusMap, createTaskTree, taskAccessible } from "../api/tasks";
 
-const Home = ({ tasks, currentUser, showCompleted, setShowCompleted }) => {
+const Home = ({
+  tasks,
+  allUsers,
+  currentUser,
+  showCompleted,
+  setShowCompleted,
+}) => {
   const [showForm, setShowForm] = useState(false);
 
   const mainTasks = createTaskTree(tasks);
   const allTasks = showCompleted
     ? mainTasks
     : mainTasks.filter((i) => i.status !== taskStatusMap.COMPLETED);
-  const userTasks = allTasks.filter((i) => i.owner === currentUser._id);
+  const userTasks = allTasks.filter((task) =>
+    taskAccessible(task, currentUser._id)
+  );
 
   const submitHandler = (values, formikBag) => {
     Meteor.call("tasks.create", values);
@@ -58,12 +66,14 @@ const Home = ({ tasks, currentUser, showCompleted, setShowCompleted }) => {
         <Row>
           <TaskTable
             tasks={userTasks}
+            allUsers={allUsers}
             currentUser={currentUser}
             showCompleted={showCompleted}
           />
         </Row>
       </Container>
       <NewTaskModal
+        allUsers={allUsers}
         currentUser={currentUser}
         show={showForm}
         setShow={setShowForm}

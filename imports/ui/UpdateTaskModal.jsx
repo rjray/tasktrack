@@ -7,6 +7,7 @@ const UpdateTaskModal = ({
   show,
   setShow,
   submitHandler,
+  allUsers,
   currentUser,
   task,
 }) => (
@@ -17,6 +18,7 @@ const UpdateTaskModal = ({
     <Modal.Body>
       <TaskForm
         type="update"
+        allUsers={allUsers}
         currentUser={currentUser}
         task={task}
         submitHandler={submitHandler}

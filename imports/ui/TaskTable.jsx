@@ -21,6 +21,7 @@ const formatDate = (date) => format(date, "P, p");
 
 const TaskExpand = ({
   data: task,
+  allUsers,
   currentUser,
   showCompleted,
   setShowNew,
@@ -28,10 +29,9 @@ const TaskExpand = ({
   setShowDelete,
   setSelectedTask,
 }) => {
-  const hasNotes = task.notes !== null && task.notes !== "";
-  const accessible = taskAccessible(task, currentUser._id);
-  const owner = task.owner === currentUser._id;
-  const isSubTask = !!task.parentId;
+  const isAccessible = taskAccessible(task, currentUser._id);
+  const isOwner = task.owner === currentUser._id;
+  const isSubTask = task.parentId;
 
   let subTaskTable = null;
   if (!isSubTask) {
@@ -41,6 +41,7 @@ const TaskExpand = ({
     subTaskTable = subtasks.length ? (
       <TaskTable
         tasks={subtasks}
+        allUsers={allUsers}
         currentUser={currentUser}
         subtable
         title="Sub-Tasks"
@@ -54,7 +55,7 @@ const TaskExpand = ({
         <Col xs={6}>
           <Button
             className="mb-3"
-            disabled={!accessible}
+            disabled={!isAccessible}
             onClick={() => {
               setSelectedTask(task);
               setShowUpdate(true);
@@ -65,7 +66,7 @@ const TaskExpand = ({
           &nbsp;
           <Button
             className="mb-3"
-            disabled={isSubTask || !accessible}
+            disabled={isSubTask || !isAccessible}
             onClick={() => {
               setSelectedTask(task);
               setShowNew(true);
@@ -76,7 +77,7 @@ const TaskExpand = ({
           &nbsp;
           <Button
             className="mb-3"
-            disabled={!owner}
+            disabled={!isOwner}
             onClick={() => {
               setSelectedTask(task);
               setShowDelete(true);
@@ -99,7 +100,7 @@ const TaskExpand = ({
         </Col>
       </Row>
       <Row>
-        <Col xs={12} md={hasNotes ? 6 : 12}>
+        <Col xs={12} md={task.notes ? 6 : 12}>
           <Row>
             <Col>
               <strong>Description:</strong>
@@ -109,8 +110,8 @@ const TaskExpand = ({
             <Col>{task.description}</Col>
           </Row>
         </Col>
-        {hasNotes && (
-          <Col xs={12} md={hasNotes ? 6 : 12}>
+        {task.notes && (
+          <Col xs={12} md={6}>
             <Row>
               <Col>
                 <strong>Notes:</strong>
@@ -122,43 +123,54 @@ const TaskExpand = ({
           </Col>
         )}
       </Row>
+      <Row>
+        <Col>
+          <Row>
+            <Col>
+              <strong>Owner:</strong> {allUsers[task.owner]}
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      {task.assignedTo && (
+        <Row>
+          <Col>
+            <Row>
+              <Col>
+                <strong>Assigned To:</strong> {allUsers[task.assignedTo]}
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      )}
+      <Row>
+        <Col>
+          <Row>
+            <Col>
+              <strong>Created:</strong> {formatDate(task.createdAt)}
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Row>
+            <Col>
+              <strong>Last Updated:</strong> {formatDate(task.updatedAt)}
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Row>
+            <Col>
+              <strong>Due:</strong> {formatDate(task.dueAt)}
+            </Col>
+          </Row>
+        </Col>
+      </Row>
       {subTaskTable && <Row className="mx-3">{subTaskTable}</Row>}
-      <Row>
-        <Col>
-          <Row>
-            <Col>
-              <strong>Created:</strong>
-            </Col>
-          </Row>
-          <Row>
-            <Col>{formatDate(task.createdAt)}</Col>
-          </Row>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Row>
-            <Col>
-              <strong>Last Updated:</strong>
-            </Col>
-          </Row>
-          <Row>
-            <Col>{formatDate(task.updatedAt)}</Col>
-          </Row>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Row>
-            <Col>
-              <strong>Due:</strong>
-            </Col>
-          </Row>
-          <Row>
-            <Col>{formatDate(task.dueAt)}</Col>
-          </Row>
-        </Col>
-      </Row>
     </Container>
   );
 };
@@ -169,49 +181,9 @@ const formatHeader = (header, title) => (
   </span>
 );
 
-const columns = [
-  {
-    name: formatHeader("Name", "Task name"),
-    selector: "name",
-    sortable: true,
-  },
-  {
-    name: formatHeader("S", "Number of sub-tasks"),
-    selector: "subtaskCount",
-    sortable: false,
-    width: "4rem",
-  },
-  {
-    name: formatHeader("Priority", "Task priority"),
-    selector: "priority",
-    sortable: true,
-    hide: "md",
-    cell: (row) => taskPriorityList[row.priority],
-  },
-  {
-    name: formatHeader("Status", "Task status"),
-    selector: "status",
-    sortable: true,
-    cell: (row) => taskStatusList[row.status],
-  },
-  {
-    name: formatHeader("Created", "When this task was created"),
-    selector: "createdAt",
-    sortable: true,
-    hide: "md",
-    cell: (row) => formatDate(row.createdAt),
-  },
-  {
-    name: formatHeader("Due", "When this task is due"),
-    selector: "dueAt",
-    sortable: true,
-    hide: "md",
-    cell: (row) => formatDate(row.dueAt),
-  },
-];
-
 const TaskTable = ({
   tasks,
+  allUsers,
   currentUser,
   subtable,
   showCompleted,
@@ -221,6 +193,54 @@ const TaskTable = ({
   const [showUpdate, setShowUpdate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+
+  const columns = [
+    {
+      name: formatHeader("Name", "Task name"),
+      selector: "name",
+      sortable: true,
+    },
+    {
+      name: formatHeader("S", "Number of sub-tasks"),
+      selector: "subtaskCount",
+      sortable: false,
+      width: "4rem",
+    },
+    {
+      name: formatHeader("Priority", "Task priority"),
+      selector: "priority",
+      sortable: true,
+      hide: "md",
+      cell: (row) => taskPriorityList[row.priority],
+    },
+    {
+      name: formatHeader("Owner", "Task owner"),
+      selector: "owner",
+      sortable: false,
+      maxWidth: "10%",
+      cell: (row) => allUsers[row.owner],
+    },
+    {
+      name: formatHeader("Assigned", "Person to whom this is assigned"),
+      selector: "assignedTo",
+      sortable: false,
+      maxWidth: "10%",
+      cell: (row) => allUsers[row.assignedTo] || "",
+    },
+    {
+      name: formatHeader("Status", "Task status"),
+      selector: "status",
+      sortable: true,
+      cell: (row) => taskStatusList[row.status],
+    },
+    {
+      name: formatHeader("Due", "When this task is due"),
+      selector: "dueAt",
+      sortable: true,
+      hide: "md",
+      cell: (row) => formatDate(row.dueAt),
+    },
+  ];
 
   const pagination =
     tasks.length < 11
@@ -235,6 +255,7 @@ const TaskTable = ({
     setShowUpdate,
     setShowDelete,
     setSelectedTask,
+    allUsers,
     currentUser,
     showCompleted,
   };
@@ -249,8 +270,7 @@ const TaskTable = ({
         dense
         noDataComponent={<p>No tasks to display.</p>}
         keyField="_id"
-        defaultSortField="dueAt"
-        defaultSortAsc={false}
+        defaultSortField="priority"
         highlightOnHover
         pointerOnHover
         data={tasks}
@@ -265,6 +285,7 @@ const TaskTable = ({
       <NewTaskModal
         show={showNew}
         setShow={setShowNew}
+        allUsers={allUsers}
         currentUser={currentUser}
         parent={selectedTask}
         submitHandler={(values, formikBag) => {
@@ -276,6 +297,7 @@ const TaskTable = ({
       <UpdateTaskModal
         show={showUpdate}
         setShow={setShowUpdate}
+        allUsers={allUsers}
         currentUser={currentUser}
         task={selectedTask}
         submitHandler={(values, formikBag) => {

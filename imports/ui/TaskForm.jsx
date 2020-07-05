@@ -71,6 +71,7 @@ const TaskForm = ({
   type = "new",
   task,
   submitHandler,
+  allUsers,
   currentUser,
   parent,
 }) => {
@@ -167,6 +168,31 @@ const TaskForm = ({
               </Col>
             </Form.Group>
           )}
+          <Form.Group as={Form.Row} controlId="assignedTo">
+            <Form.Label column sm={3} className="text-md-right text-sm-left">
+              <strong>Assigned To:</strong>
+            </Form.Label>
+            <Col sm={3}>
+              <Field
+                as={Form.Control}
+                type="select"
+                component="select"
+                name="assignedTo"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                style={{ width: "100%", marginTop: "0.35rem" }}
+              >
+                <option value="">-- Select --</option>
+                {Object.keys(allUsers)
+                  .sort((a, b) => allUsers[a].localeCompare(allUsers[b]))
+                  .map((id, idx) => (
+                    <option key={idx} value={id}>
+                      {allUsers[id]}
+                    </option>
+                  ))}
+              </Field>
+            </Col>
+          </Form.Group>
           {isUpdate && (
             <>
               <Form.Group as={Form.Row} controlId="createdAt">

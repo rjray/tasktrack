@@ -8,6 +8,7 @@ const NewTaskModal = ({
   show,
   setShow,
   submitHandler,
+  allUsers,
   currentUser,
   parent,
 }) => (
@@ -22,6 +23,7 @@ const NewTaskModal = ({
         </p>
       )}
       <TaskForm
+        allUsers={allUsers}
         currentUser={currentUser}
         task={defaultTaskTemplate}
         parent={parent}

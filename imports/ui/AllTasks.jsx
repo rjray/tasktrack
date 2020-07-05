@@ -12,7 +12,13 @@ import NewTaskModal from "./NewTaskModal";
 import TaskTable from "./TaskTable";
 import { taskStatusMap, createTaskTree } from "../api/tasks";
 
-const AllTasks = ({ tasks, currentUser, showCompleted, setShowCompleted }) => {
+const AllTasks = ({
+  tasks,
+  allUsers,
+  currentUser,
+  showCompleted,
+  setShowCompleted,
+}) => {
   const [showForm, setShowForm] = useState(false);
 
   const mainTasks = createTaskTree(tasks);
@@ -57,12 +63,14 @@ const AllTasks = ({ tasks, currentUser, showCompleted, setShowCompleted }) => {
         <Row>
           <TaskTable
             tasks={allTasks}
+            allUsers={allUsers}
             currentUser={currentUser}
             showCompleted={showCompleted}
           />
         </Row>
       </Container>
       <NewTaskModal
+        allUsers={allUsers}
         currentUser={currentUser}
         show={showForm}
         setShow={setShowForm}
