@@ -5,9 +5,37 @@ specialization.
 
 ## Description
 
-This is an enhanced task-tracking application. It will eventually feature
-assigning tasks to other users, sub-tasks, tracking lifecycle, etc., as well
-as the basic features.
+This is an enhanced task-tracking application. It features assigning tasks to
+other users, sub-tasks, tracking progress, etc., as well as the basic features.
+
+This project utilizes:
+
+* [Meteor](https://www.meteor.com/)
+* [React.js](https://reactjs.org/)
+* [Bootstrap](https://getbootstrap.com/)
+* [React Bootstrap](https://react-bootstrap.github.io/)
+
+Other JavaScript packages are utilized as well; see the `package.json` file
+for the top-level dependencies.
+
+## Running
+
+After either cloning the project or downloading and dissolving an archive of
+it, run the following commands (in the project directory):
+
+```bash
+$ meteor npm install
+$ meteor
+```
+
+This will start the application on port 3000.
+
+## Further Work
+
+This project was submitted for final evaluation on 7/6/2020, and will
+(probably) not see any additional work. I will keep the GitHub project,
+however, for future reference. There are some things I managed to do in the
+project that may prove useful in the future.
 
 ## Dissatisfaction
 
